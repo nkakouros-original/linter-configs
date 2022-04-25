@@ -1,0 +1,14 @@
+# vi: ft=csv
+# Headers:
+# project,appname,download_pattern,extract
+#
+# In the download_pattern, you specify the filename part of the url to download
+# from. You can use the following variables (supporting bash expansion) in the
+# download_pattern:
+# $project: the value of `project`
+# $app: the value of `appname`
+# $version: the latest version as detected
+# $os: the OS, e.g. linux
+
+koalaman/shellcheck,shellcheck,shellcheck-v$version.linux.x86_64.tar.xz,true
+# not installing with cabal because creating a cabal file seems too hard

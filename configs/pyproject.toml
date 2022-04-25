@@ -1,0 +1,7 @@
+[tool.black]
+line-length = 88
+
+[tool.isort]
+# https://black.readthedocs.io/en/stable/compatible_configs.html#isort
+profile = 'black'
+# known_first_party = twmn,twmn_helpers,cds,canvas

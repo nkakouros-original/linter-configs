@@ -1,0 +1,27 @@
+" vi: ft=vim
+" This config is supposed to be used with the local_vimrc plugin:
+" https://github.com/LucHermitte/local_vimrc
+"
+" It expects the `ale` plugin to also be installed.
+" https://github.com/dense-analysis/ale
+
+let g:ale_linters['python'] = ['flake8', 'pydocstyle', 'mypy']
+let g:ale_fixers['python'] = ['isort', 'black']
+
+let s:ale_python_config = $PWD . '/resources/dev-helpers/linters/python.setup.cfg'
+let g:ale_python_flake8_options = '--config ' . s:ale_python_config
+let g:ale_python_mypy_options = '--config-file ' . s:ale_python_config
+let g:ale_python_isort_options = '--settings-file ' . s:ale_python_config
+
+let g:ale_python_black_options = '--config ' . $PWD . '/resources/dev-helpers/linters/python.setup.toml'
+
+let g:ale_linters['yaml'] = ['yamllint']
+let g:ale_linters['ansible'] = ['']
+let g:ale_yaml_yamllint_options = '--config-file ' . $PWD . '/resources/dev-helpers/linters/yamllint.yml'
+
+
+let g:ale_linters['sh'] = ['shellcheck']
+let g:ale_fixers['sh'] = ['shfmt']
+
+let g:ale_sh_shfmt_options = '-i 2 -bn -ci'
+let g:ale_sh_shellcheck_options = '-x'

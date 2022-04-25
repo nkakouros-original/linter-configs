@@ -1,0 +1,32 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+ansible-lint = "*"
+black = '*'
+flake8 = '*'
+flake8-bandit = '*'
+flake8-bugbear = '*'
+flake8-builtins = '*'
+flake8-comprehensions = '*'
+flake8-eradicate = '*'
+flake8-implicit-str-concat = '*'
+flake8-length = '*'
+flake8-print = '*'
+flake8-pytest-style = '*'
+flake8-todos = '*'
+flake8-type-checking = '*'
+isort = '*'
+mypy = '*'
+pep8 = '*'
+pep8-naming = '*'
+pydocstyle = '*'
+vulture = '*'
+yamllint = '*'
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"

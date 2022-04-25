@@ -1,0 +1,25 @@
+---
+
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+- name: molecule_iptables
+  image: geerlingguy/docker-ubuntu1804-ansible
+  pull: true
+  pre_build_image: true
+  privileged: true
+  cap-add: ALL
+  volumes: /lib/modules:/lib/modules
+lint: |
+  set -e
+  yamllint -c $TWMN_LINTER_DIR/yamllint.yml .
+  ansible-lint -c $TWMN_LINTER_DIR/ansible-lint.yml --exclude $MOLECULE_SCENARIO_DIRECTORY/vars.yml
+  flake8
+provisioner:
+  name: ansible
+  playbooks:
+    side_effect: side_effect.yml
+verifier:
+  name: ansible
