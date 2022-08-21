@@ -4,7 +4,7 @@ dependency:
   name: shell
   command: ansible-galaxy install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml'
 driver:
-  name: podman
+  name: ${MOLECULE_DRIVER-docker}
 lint: |
   set -e
   yamllint .
@@ -12,7 +12,7 @@ lint: |
   flake8
 platforms:
   - name: ${MOLECULE_INSTANCE_NAME-molecule-test}
-    image: ${MOLECULE_DOCKER_IMAGE-geerlingguy/docker-ubuntu1804-ansible:latest}
+    image: ${MOLECULE_CONTAINER_IMAGE-geerlingguy/docker-ubuntu1804-ansible:latest}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
