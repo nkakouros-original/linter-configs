@@ -2,6 +2,7 @@
 
 dependency:
   name: galaxy
+  requirements-file: requirements.txt
 driver:
   name: docker
 lint: |
