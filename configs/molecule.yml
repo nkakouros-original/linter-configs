@@ -4,7 +4,7 @@ dependency:
   name: shell
   command: ansible-galaxy install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml'
 driver:
-  name: ${MOLECULE_DRIVER-docker}
+  name: ${DRIVER-docker}
 lint: |
   set -e
   yamllint .
