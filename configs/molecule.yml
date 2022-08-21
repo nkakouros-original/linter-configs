@@ -3,22 +3,28 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
-platforms:
-- name: molecule_iptables
-  image: geerlingguy/docker-ubuntu1804-ansible
-  pull: true
-  pre_build_image: true
-  privileged: true
-  cap-add: ALL
-  volumes: /lib/modules:/lib/modules
+  name: podman
 lint: |
   set -e
-  yamllint -c $TWMN_LINTER_DIR/yamllint.yml .
-  ansible-lint -c $TWMN_LINTER_DIR/ansible-lint.yml --exclude $MOLECULE_SCENARIO_DIRECTORY/vars.yml
+  yamllint .
+  ansible-lint . molecule
   flake8
+platforms:
+  - name: ${MOLECULE_INSTANCE_NAME-molecule-test}
+    image: ${MOLECULE_DOCKER_IMAGE-geerlingguy/docker-ubuntu1804-ansible:latest}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      jinja2_native: true
+      duplicate_dict_key: error
+      any_unparsed_is_failed: true
+      unparsed_is_failed: true
+      any_errors_fatal: true
   playbooks:
     side_effect: side_effect.yml
 verifier:

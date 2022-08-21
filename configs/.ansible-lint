@@ -1,8 +1,9 @@
+# vi: ft=yaml
 ---
 
 # .ansible-lint
-exclude_paths:
-  - ../../../data/deps
+# exclude_paths:
+  # - ../../../data/deps
 
 # Enable checking of loop variable prefixes in roles
 loop_var_prefix: "_{role_name}__"
@@ -10,10 +11,21 @@ loop_var_prefix: "_{role_name}__"
 use_default_rules: true
 
 skip_list:
-  - yaml  # I will manually run yamllint
-  - meta-no-info  # our roles are not meant to be published online, no need to maintain galaxy info
+  - yaml  # yamllint will be run separately
+  - fqcn-builtins
 
-warn_list: []
+  # TODO disabled due to https://github.com/ansible/ansible-lint/issues/2079
+  - no-loop-var-prefix
+
+  # TODO not sure if we want to enabled this or not
+  - no-log-password
+
+  # TODO can we enable selected schemas and skip others (like for
+  # meta/main.yml)?
+  - schema
+
+warn_list:
+  - no-loop-var-prefix
 
 # Any rule that has the 'opt-in' tag will not be loaded unless its 'id' is
 # mentioned in the enable_list:
@@ -21,6 +33,7 @@ enable_list:
   - no-same-owner
   - no-log-password
   - empty-string-compare
+  - key-order
 
 # Offline mode disables installation of requirements.yml
 offline: false
