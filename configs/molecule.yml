@@ -12,7 +12,7 @@ lint: |
   flake8
 platforms:
   - name: ${CUSTOM_MOLECULE_INSTANCE_NAME:-molecule-test}
-    image: ${CUSTOM_MOLECULE_CONTAINER_IMAGE:-ubuntu:latest}
+    image: ${CUSTOM_MOLECULE_CONTAINER_IMAGE:-geerlingguy/docker-ubuntu1804-ansible:latest}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
