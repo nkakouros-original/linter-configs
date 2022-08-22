@@ -4,15 +4,15 @@ dependency:
   name: shell
   command: ansible-galaxy install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml'
 driver:
-  name: ${MOLECULE_DRIVER:-docker}
+  name: ${CUSTOM_MOLECULE_DRIVER:-docker}
 lint: |
   set -e
   yamllint .
   ansible-lint . molecule
   flake8
 platforms:
-  - name: ${MOLECULE_INSTANCE_NAME:-molecule-test}
-    image: ${MOLECULE_CONTAINER_IMAGE:-ubuntu:latest}
+  - name: ${CUSTOM_MOLECULE_INSTANCE_NAME:-molecule-test}
+    image: ${CUSTOM_MOLECULE_CONTAINER_IMAGE:-ubuntu:latest}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
