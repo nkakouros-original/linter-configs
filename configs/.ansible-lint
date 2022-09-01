@@ -24,10 +24,6 @@ skip_list:
   # meta/main.yml)?
   - schema
 
-  # TODO re-enabled jinja spacing once
-  # https://github.com/ansible/ansible-lint/issues/2338 is resolved
-  - jinja[spacing]
-
 warn_list:
   - no-loop-var-prefix
 
