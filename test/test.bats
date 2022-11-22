@@ -8,7 +8,7 @@ setup() {
 }
 
 @test "run black and fail" {
-  run black --check --diff .
+  run black --check --diff --quiet . 2>&1
 
   assert_failure
   assert_line --index 8  -- '-'

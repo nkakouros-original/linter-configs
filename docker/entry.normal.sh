@@ -11,4 +11,4 @@ if [[ "$#" -gt 0 ]]; then
   exit
 fi
 
-black --check --diff .
+/linter-configs/run-linters

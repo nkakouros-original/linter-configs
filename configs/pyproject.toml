@@ -1,7 +1,44 @@
 [tool.black]
-line-length = 88
+
+[tool.flake8]
+max-line-length = 88
+select = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ]
+
+ignore = ['E501', 'W503', 'W505', 'E402', 'E203', 'B404', 'EXE001']
+# E501 Line too long (pycodestyle)
+# W503 Line break occurred before a binary operator (pycodestyle)
+# W505 doc line too long (82 > 79 characters)
+# E402 Module level import not at top of file (pycodestyle)
+# E203 Whitespace before ':' (pycodestyle)
+# B404 bandit: sec implications of subprocess module
+# EXE001: Shebang is present but the file is not executable
+
+# Do not complain about imported modules that do not have type annotations
+ignore_missing_imports = true
+
+unused-arguments-ignore-abstract-functions = true
+unused-arguments-ignore-stub-functions = true
+
+noqa-require-code = true
+
+# os-open-mode = 0o755
+# os-mkdir-mode = 0o755
+# os-mkfifo-mode = 0o640
+# os-mknod-mode = 0o640
 
 [tool.isort]
-# https://black.readthedocs.io/en/stable/compatible_configs.html#isort
-profile = 'black'
-# known_first_party = twmn,twmn_helpers,cds,canvas
+profile = "black"
+known_first_party = ["twmn", "twmn_helpers", "cds", "canvas"]
+
+[tool.mypy]
+namespace_packages = true
+cache_dir = "/tmp/mypy"
+disallow_untyped_defs = true
+show_traceback = true
+strict_equality = true
+local_partial_types = true
+explicit_package_bases = true
+follow_imports = "silent"
+
+[tool.pydocstyle]

@@ -4,27 +4,51 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-ansible-lint = "*"
+# Python
+bandit = '*'
 black = '*'
 flake8 = '*'
+flake8-async = '*'
 flake8-bandit = '*'
 flake8-bugbear = '*'
 flake8-builtins = '*'
+flake8-clean-block = '*'
+flake8-comments = '*'
 flake8-comprehensions = '*'
+flake8-datetimez = '*'
+flake8-encodings = '*'
 flake8-eradicate = '*'
-flake8-implicit-str-concat = '*'
+flake8-executable = '*'
+flake8-future-annotations = '*'
 flake8-length = '*'
+flake8-markdown = '*'
+flake8-newspaper-style = '*'
+flake8-new-union-types = '*'
+flake8-no-implicit-concat = '*'
+flake8-noqa = '*'
+flake8-pep3101 = '*'
+flake8-pep585 = '*'
+flake8-picky-parentheses = '*'
 flake8-print = '*'
+flake8-pyprojecttoml = '*'
 flake8-pytest-style = '*'
+flake8-secure-coding-standard = '*'
+flake8-simplify = '*'
 flake8-todos = '*'
 flake8-type-checking = '*'
+flake8-unused-arguments = '*'
 isort = '*'
 mypy = '*'
-pep8 = '*'
 pep8-naming = '*'
 pydocstyle = '*'
 vulture = '*'
+
+# YAML
 yamllint = '*'
+
+# Ansible
+ansible-lint = "*"
+
 
 [dev-packages]
 
