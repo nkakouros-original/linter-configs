@@ -11,4 +11,4 @@ if [[ "$#" -gt 0 ]]; then
   exit
 fi
 
-/linter-configs/run-linters
+/linter-configs/bin/run-linters

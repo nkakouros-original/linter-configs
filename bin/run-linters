@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+array_is_empty() {
+  if [[ "$(declare -p $1)" == "declare -a $1=([0]=\"\")" ]]; then
+    return 0
+  fi
+  return 1
+}
+
+info() {
+  printf '\e[33m%s\e[0m\n' "$*"
+  # set -x
+  if [[ "$debug" == 1 ]]; then
+    export PS4="\n\033[1;33mRunning linter: \033[0m"
+    set -x
+  else
+    trap "[[ \$BASH_COMMAND == !(trap\ *|error=*) ]] && info \$BASH_COMMAND" DEBUG
+  fi
+}
+
+latest_commit_only="$LATEST_COMMIT_ONLY"  # Dockerfile ENV
+debug="$DEBUG"  # Dockerfile ENV
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --latest-commit)
+      latest_commit_only=true
+      ;;
+    --debug)
+      debug=true
+      ;;
+  esac
+  shift
+done
+
+git config --global --add safe.directory /repo
+
+# Python
+
+error=0
+
+if [[ "$latest_commit_only" -eq 1 ]]; then
+  readarray -t files <<<"$(git diff-tree --no-commit-id --name-only -r HEAD | grep -P '.py$')"
+else
+  readarray -t files <<<"$(git ls-files '*.py')"
+fi
+
+if ! array_is_empty files; then
+  info 'Linting Python files'
+  bandit --silent "${files[@]}" || { error=1; } 2>/dev/null
+  black --check --diff --quiet "${files[@]}" || { error=1; } 2>/dev/null
+  flake8 "${files[@]}" || { error=1; } 2>/dev/null
+  isort --check-only "${files[@]}" || { error=1; } 2>/dev/null
+  pydocstyle "${files[@]}" || { error=1; } 2>/dev/null
+  mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
+  vulture "${files[@]}" || { error=1; } 2>/dev/null
+  { trap - DEBUG; set +x; } 2>/dev/null || { error=1; } 2>/dev/null
+fi
+
+# markdown
+# flake8-markdown *.md
+
+exit "$error"
