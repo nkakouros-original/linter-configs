@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /linter-configs/.python/bin/activate
+source /linter-configs/vendor/python/bin/activate
 
 cp -r /linter-configs/configs/* /repo/
 

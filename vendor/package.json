@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "remark-cli": "^11.0.0",
+    "remark-lint": "^9.1.1",
+    "remark-lint-checkbox-character-style": "^4.1.1",
+    "remark-lint-checkbox-content-indent": "^4.1.1",
+    "remark-lint-fenced-code-flag-case": "^1.0.1",
+    "remark-lint-final-newline": "^2.1.1",
+    "remark-lint-first-heading-level": "^3.1.1",
+    "remark-lint-heading-word-length": "^1.0.0",
+    "remark-lint-linebreak-style": "^3.1.1",
+    "remark-lint-list-item-bullet-indent": "^4.1.1",
+    "remark-lint-list-item-style": "^1.0.1",
+    "remark-lint-no-duplicate-defined-urls": "^2.1.1",
+    "remark-lint-no-duplicate-definitions": "^3.1.1",
+    "remark-lint-no-duplicate-headings-in-section": "^3.1.1",
+    "remark-lint-no-empty-url": "^3.1.1",
+    "remark-lint-no-heading-content-indent": "^4.1.1",
+    "remark-lint-no-heading-indent": "^4.1.1",
+    "remark-lint-no-heading-like-paragraph": "^3.1.1",
+    "remark-lint-no-html": "^3.1.1",
+    "remark-lint-no-missing-blank-lines": "^3.1.1",
+    "remark-lint-no-paragraph-content-indent": "^4.1.1",
+    "remark-lint-no-reference-like-url": "^3.1.1",
+    "remark-lint-no-tabs": "^3.1.1",
+    "remark-lint-no-undefined-references": "^4.2.0",
+    "remark-lint-no-unneeded-full-reference-image": "^3.1.1",
+    "remark-lint-no-unneeded-full-reference-link": "^3.1.1",
+    "remark-lint-no-unused-definitions": "^3.1.1",
+    "remark-lint-strikethrough-marker": "^2.1.1",
+    "remark-preset-lint-markdown-style-guide": "^5.1.2"
+  }
+}

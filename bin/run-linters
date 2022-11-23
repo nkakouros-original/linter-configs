@@ -8,13 +8,13 @@ array_is_empty() {
 }
 
 info() {
-  printf '\e[33m%s\e[0m\n' "$*"
-  # set -x
+  printf '\n\e[33m%s\e[0m\n' "$*"
+
   if [[ "$debug" == 1 ]]; then
     export PS4="\n\033[1;33mRunning linter: \033[0m"
     set -x
   else
-    trap "[[ \$BASH_COMMAND == !(trap\ *|error=*) ]] && info \$BASH_COMMAND" DEBUG
+    trap "[[ \$BASH_COMMAND == !(trap\ *|error=*|cd\ *|exit\ *|cp\ *) ]] && info \$BASH_COMMAND" DEBUG
   fi
 }
 
@@ -35,16 +35,21 @@ done
 
 git config --global --add safe.directory /repo
 
-# Python
-
 error=0
+declare -a files=()
 
-if [[ "$latest_commit_only" -eq 1 ]]; then
-  readarray -t files <<<"$(git diff-tree --no-commit-id --name-only -r HEAD | grep -P '.py$')"
-else
-  readarray -t files <<<"$(git ls-files '*.py')"
-fi
+find_files() {
+  type="$1"
 
+  if [[ "$latest_commit_only" -eq 1 ]]; then
+    readarray -t files <<<"$(git diff-tree --no-commit-id --name-only -r HEAD | grep -P .$type\$)"
+  else
+    readarray -t files <<<"$(git ls-files \*.$type)"
+  fi
+}
+
+# Python
+find_files py
 if ! array_is_empty files; then
   info 'Linting Python files'
   bandit --silent "${files[@]}" || { error=1; } 2>/dev/null
@@ -54,10 +59,29 @@ if ! array_is_empty files; then
   pydocstyle "${files[@]}" || { error=1; } 2>/dev/null
   mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
   vulture "${files[@]}" || { error=1; } 2>/dev/null
-  { trap - DEBUG; set +x; } 2>/dev/null || { error=1; } 2>/dev/null
+  { trap - DEBUG; set +x; } 2>/dev/null
 fi
 
 # markdown
-# flake8-markdown *.md
+find_files md
+if ! array_is_empty files; then
+  info 'Linting Markdown files'
+  flake8-markdown "${files[*]}" | { error=1; } 2>/dev/null
+
+  {
+    cp configs/.remarkrc.yaml vendor/;
+    cd vendor;
+  } 2>/dev/null
+  npx remark --quiet "${files[*]/#/../}" --use $(
+    { cat package.json \
+      | jq -r '.["dependencies"]
+                | keys | map(select(. | test("^remark-.*lint-.+")))
+                | join(" --use ")'
+    } 2>/dev/null
+  ) >/dev/null
+  { cd -; } &>/dev/null
+
+  { trap - DEBUG; set +x; } 2>/dev/null
+fi
 
 exit "$error"

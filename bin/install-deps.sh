@@ -54,16 +54,24 @@ apt install -y "${packages[@]}"
 
 # go dependencies
 echo 'Installing go dependencies'
+pwd
+ls -al *
 cat vendor/deps.go | xargs go install
 
 # python dependencies
 echo 'Installing python dependencies'
 pip install virtualenv
-virtualenv .python
+virtualenv vendor/python
 pip install pipenv
 export PIPENV_PIPFILE='vendor/Pipfile'
-export VIRTUAL_ENV='../.python/'  # relative to Pipfile
+export VIRTUAL_ENV='python/'  # relative to Pipfile
 pipenv install
+
+# npm packages
+apt remove -y libnode*
+curl -sL https://deb.nodesource.com/setup_18.x | bash -
+apt install -y nodejs
+npm install --prefix vendor
 
 # github deps
 echo 'Installing github projects'
