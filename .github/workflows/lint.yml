@@ -18,8 +18,8 @@ on:  # yamllint disable-line rule:truthy
         type: string
       debug:
         required: false
-        default: 0
-        type: number
+        default: false
+        type: boolean
   push:
     branches: [master]
   pull_request:

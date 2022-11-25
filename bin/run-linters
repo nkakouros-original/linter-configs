@@ -12,14 +12,13 @@ array_is_empty() {
 info() {
   printf '\n\e[33m%s\e[0m\n' "$*"
 
-  if [[ "$debug" == 1 ]]; then
+  if [[ "$debug" == true ]]; then
     export PS4="\n\033[1;33mRunning linter: \033[0m"
     set -x
   else
     trap "[[ \$BASH_COMMAND == !(trap\ *|error=*|cd\ *|exit\ *|cp\ *|rm\ *) ]] && info \$BASH_COMMAND" DEBUG
   fi
 }
-declare -p pr_mode
 
 find_branch_base() {
   base="${BASE_REF:-}"
@@ -35,12 +34,12 @@ find_branch_base() {
   exit 1
 }
 
-pr_mode="${PR_MODE:-1}"  # Dockerfile ENV
-debug="${DEBUG:-0}"  # Dockerfile ENV
+pr_mode="${PR_MODE:-true}"  # Dockerfile ENV
+debug="${DEBUG:-false}"  # Dockerfile ENV
 
 git config --global --add safe.directory /repo
 
-if [[ "$pr_mode" -eq 1 ]]; then
+if [[ "$pr_mode" == true ]]; then
   base_branch="$(find_branch_base)"
 fi
 
@@ -50,7 +49,7 @@ declare -a files=()
 find_files() {
   type="$1"
 
-  if [[ "$pr_mode" -eq 1 ]]; then
+  if [[ "$pr_mode" -eq true ]]; then
     readarray -t files <<<"$(
       git log --oneline --name-only --pretty='format:' -- "$base_branch"..HEAD \
         | sort -u \
