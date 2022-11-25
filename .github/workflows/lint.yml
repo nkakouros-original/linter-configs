@@ -7,14 +7,14 @@ on:  # yamllint disable-line rule:truthy
     inputs:
       enabled:
         required: true
-        type: number
+        type: boolean
       pr_mode:
         required: false
-        default: 1
-        type: number
+        default: true
+        type: boolean
       base_ref:
         required: false
-        default: ${{ github.GITHUB_BASE_REF }}
+        default: ${{ github.base_ref }}
         type: string
       debug:
         required: false
@@ -37,7 +37,7 @@ jobs:
           mkdir -p /tmp/upper /tmp/workdir;
           docker run
           --pull always -t --rm
-          -e PR_MODE=${{ inputs.pr_mode }}
+          -e PR_MODE=${{ inputs.enabled }}
           -e DEBUG=${{ inputs.debug }}
           -e BASE_REF=${{ inputs.base_ref }}
           --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay

@@ -19,6 +19,7 @@ info() {
     trap "[[ \$BASH_COMMAND == !(trap\ *|error=*|cd\ *|exit\ *|cp\ *|rm\ *) ]] && info \$BASH_COMMAND" DEBUG
   fi
 }
+declare -p pr_mode
 
 find_branch_base() {
   base="${BASE_REF:-}"
