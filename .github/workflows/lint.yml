@@ -14,7 +14,7 @@ on:  # yamllint disable-line rule:truthy
         type: number
       base_ref:
         required: false
-        default: ${{ env.GITHUB_BASE_REF }}
+        default: ${{ github.GITHUB_BASE_REF }}
         type: string
       debug:
         required: false
