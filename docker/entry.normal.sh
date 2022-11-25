@@ -2,9 +2,10 @@
 
 source /linter-configs/vendor/python/bin/activate
 
-cp -r /linter-configs/configs/* /repo/
+mkdir -p ~/.ssh
+ssh-keyscan -t rsa github.com > ~/.ssh/known_hosts 2>/dev/null
 
-cd /repo
+cp -r /linter-configs/configs/* /repo/
 
 if [[ "$#" -gt 0 ]]; then
   "$@"

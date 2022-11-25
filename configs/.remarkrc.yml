@@ -1,8 +1,10 @@
 ---
 
 plugins:
+  # presets
   remark-preset-lint-markdown-style-guide: ~
 
+  # official rules outside preset
   remark-lint-checkbox-character-style: ~
   remark-lint-checkbox-content-indent: ~
   remark-lint-fenced-code-flag-case: ~
@@ -30,4 +32,5 @@ plugins:
   remark-lint-no-unused-definitions: ~
   remark-lint-strikethrough-marker: ~
 
-  remark-lint-maximum-line-length: 70
+  # preset overrides
+  remark-lint-maximum-line-length: 88

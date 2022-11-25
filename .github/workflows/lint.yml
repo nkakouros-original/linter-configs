@@ -6,9 +6,20 @@ on:  # yamllint disable-line rule:truthy
   workflow_call:
     inputs:
       enabled:
+        required: true
+        type: number
+      pr_mode:
         required: false
-        default: false
-        type: boolean
+        default: 1
+        type: number
+      base_ref:
+        required: false
+        default: ${{ env.GITHUB_BASE_REF }}
+        type: string
+      debug:
+        required: false
+        default: 0
+        type: number
   push:
     branches: [master]
   pull_request:
@@ -22,4 +33,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker run --pull always -t --rm -v "$PWD":/repo nkakouros/linter-configs:latest
+      - run: >-
+          mkdir -p /tmp/upper /tmp/workdir;
+          docker run
+          --pull always -t --rm
+          -e PR_MODE=${{ inputs.pr_mode }}
+          -e DEBUG=${{ inputs.debug }}
+          -e BASE_REF=${{ inputs.base_ref }}
+          --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay
+          nkakouros/linter-configs:latest
