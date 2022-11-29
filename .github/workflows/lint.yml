@@ -36,8 +36,15 @@ jobs:
     if: ${{ inputs.enabled }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: >-
+      - name: Clone with full history and checkout branch
+        uses: actions/checkout@v2
+        if: github.event_name == 'pull_request'
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.head_ref }}
+
+      - name: Run linters using docker image
+        run: >-
           mkdir -p /tmp/upper /tmp/workdir;
           docker run
           --pull always -t --rm

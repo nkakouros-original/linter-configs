@@ -20,20 +20,6 @@ info() {
   fi
 }
 
-find_base_branch() {
-  base="${BASE_REF:-}"
-
-  [[ "$base" != '' ]] && echo "$base" && return
-
-  base="$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')"
-
-  [[ "$base" != '' ]] && echo "$base" && return
-
-  echo 'Private repo or no origin remote set' 2>/dev/null
-  echo 'Set PR_MODE=0 or supply BASE_REF to compare against' 2>/dev/null
-  exit 1
-}
-
 find_head_branch() {
   head="${HEAD_REF:-}"
 
@@ -48,27 +34,39 @@ find_head_branch() {
   echo "$head"
 }
 
+find_base_branch() {
+  base="${BASE_REF:-}"
+
+  [[ "$base" != '' ]] && echo "$base" && return
+
+  base="$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')"
+
+  [[ "$base" != '' ]] && echo "$base" && return
+
+  echo 'Private repo or no origin remote set' 2>/dev/null
+  echo 'Set PR_MODE=0 or supply BASE_REF to compare against' 2>/dev/null
+  exit 1
+}
+
 pr_mode="${PR_MODE:-true}"  # Dockerfile ENV
 debug="${DEBUG:-false}"  # Dockerfile ENV
 
 git config --global --add safe.directory /repo
 
 if [[ "$pr_mode" == true ]]; then
-  base_branch="$(find_base_branch)"
   head_branch="$(find_head_branch)"
+  base_branch="$(find_base_branch)"
 fi
 
 error=0
 declare -a files=()
 
-git --version
-git log --oneline --name-only --pretty='format:' $base_branch..$head_branch --
 find_files() {
   type="$1"
 
   if [[ "$pr_mode" == true ]]; then
     readarray -t files <<<"$(
-      git log --oneline --name-only --pretty='format:' -- $base_branch..$head_branch \
+      git log --oneline --name-only --pretty='format:' $base_branch..$head_branch -- \
         | sort -u \
         | grep -P ".$type\$"
     )"
