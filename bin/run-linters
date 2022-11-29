@@ -51,14 +51,6 @@ find_base_branch() {
 pr_mode="${PR_MODE:-true}"  # Dockerfile ENV
 debug="${DEBUG:-false}"  # Dockerfile ENV
 
-set -x
-unset PS4
-# git config --global --add safe.directory /repo
-# git branch -r
-# git branch -a
-# git log
-# git status
-
 if [[ "$pr_mode" == true ]]; then
   head_branch="$(find_head_branch)"
   base_branch="$(find_base_branch)"
