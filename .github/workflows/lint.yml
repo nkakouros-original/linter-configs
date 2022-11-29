@@ -16,6 +16,10 @@ on:  # yamllint disable-line rule:truthy
         required: false
         default: ${{ github.base_ref }}
         type: string
+      head_ref:
+        required: false
+        default: ${{ github.head_ref }}
+        type: string
       debug:
         required: false
         default: false
@@ -40,5 +44,6 @@ jobs:
           -e PR_MODE=${{ inputs.enabled }}
           -e DEBUG=${{ inputs.debug }}
           -e BASE_REF=${{ inputs.base_ref }}
+          -e HEAD_REF=${{ inputs.head_ref }}
           --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay
           nkakouros/linter-configs:latest

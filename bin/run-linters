@@ -20,7 +20,7 @@ info() {
   fi
 }
 
-find_branch_base() {
+find_base_branch() {
   base="${BASE_REF:-}"
 
   [[ "$base" != '' ]] && echo "$base" && return
@@ -34,24 +34,41 @@ find_branch_base() {
   exit 1
 }
 
+find_head_branch() {
+  head="${HEAD_REF:-}"
+
+  [[ "$head" != '' ]] && echo "$head" && return
+
+  head="$(git rev-parse --abbrev-ref HEAD)"
+
+  [[ "$head" != '' ]] && echo "$head" && return
+
+  head='HEAD'
+
+  echo "$head"
+}
+
 pr_mode="${PR_MODE:-true}"  # Dockerfile ENV
 debug="${DEBUG:-false}"  # Dockerfile ENV
 
 git config --global --add safe.directory /repo
 
 if [[ "$pr_mode" == true ]]; then
-  base_branch="$(find_branch_base)"
+  base_branch="$(find_base_branch)"
+  head_branch="$(find_head_branch)"
 fi
 
 error=0
 declare -a files=()
 
+git --version
+git log --oneline --name-only --pretty='format:' $base_branch..$head_branch --
 find_files() {
   type="$1"
 
-  if [[ "$pr_mode" -eq true ]]; then
+  if [[ "$pr_mode" == true ]]; then
     readarray -t files <<<"$(
-      git log --oneline --name-only --pretty='format:' -- "$base_branch"..HEAD \
+      git log --oneline --name-only --pretty='format:' -- $base_branch..$head_branch \
         | sort -u \
         | grep -P ".$type\$"
     )"
