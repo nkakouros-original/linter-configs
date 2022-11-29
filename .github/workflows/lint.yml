@@ -41,12 +41,15 @@ jobs:
         # refs to extract the changed files in the pull request. GitHub Actions
         # checkouts only the head ref. Here, the base ref will also be checked
         # out so that revisions like `master..pull-branch` are valid.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          set-safe-directory: true
 
       - name: Checkout pull target
-        run: git branch ${{ inputs.base_ref }} --track origin/${{ inputs.base_ref }}
+        run: |
+          echo git branch ${{ inputs.base_ref }} --track origin/${{ inputs.base_ref }}
+          git branch ${{ inputs.base_ref }} --track origin/${{ inputs.base_ref }}
 
       - name: Run linters using docker image
         run: >-
