@@ -51,6 +51,11 @@ find_base_branch() {
 pr_mode="${PR_MODE:-true}"  # Dockerfile ENV
 debug="${DEBUG:-false}"  # Dockerfile ENV
 
+git config --global --add safe.directory /repo
+if [[ -v GITHUB_ACTION ]]; then
+  git config --global --add safe.directory /repo
+fi
+
 if [[ "$pr_mode" == true ]]; then
   head_branch="$(find_head_branch)"
   base_branch="$(find_base_branch)"
