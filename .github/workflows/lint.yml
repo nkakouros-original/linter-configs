@@ -47,7 +47,7 @@ jobs:
           ref: ${{ inputs.base_ref }}
 
       - name: Checkout pull target
-        run: git branch ${{ input.base_ref }} --track origin/${{ input.base_ref }}
+        run: git branch ${{ inputs.base_ref }} --track origin/${{ inputs.base_ref }}
 
       - name: Run linters using docker image
         run: >-
