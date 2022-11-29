@@ -103,7 +103,8 @@ if ! array_is_empty files; then
     cd /linter-configs/vendor;
     cp ../configs/.remarkrc.yml ./;
   }
-  npx remark --quiet "${files[@]/#/$repo_dir/}" --rc-path ./.remarkrc.yml >/dev/null
+  npx remark --frail --quiet "${files[@]/#/$repo_dir/}" --rc-path ./.remarkrc.yml >/dev/null \
+    || { error=1; } 2>/dev/null
   { cd -; } &>/dev/null
 
   { trap - DEBUG; set +x; } 2>/dev/null
