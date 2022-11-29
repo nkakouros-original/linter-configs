@@ -36,12 +36,18 @@ jobs:
     if: ${{ inputs.enabled }}
     runs-on: ubuntu-latest
     steps:
-      - name: Clone with full history and checkout branch
+      - name: Clone with full history and checkout pull target
+        # The script that runs the linters may need to compare the base and head
+        # refs to extract the changed files in the pull request. GitHub Actions
+        # checkouts only the head ref. Here, the base ref will also be checked
+        # out so that revisions like `master..pull-branch` are valid.
         uses: actions/checkout@v2
-        if: github.event_name == 'pull_request'
         with:
           fetch-depth: 0
-          ref: ${{ inputs.head_ref }}
+          ref: ${{ inputs.base_ref }}
+
+      - name: Checkout pull request branch
+        uses: actions/checkout@v2
 
       - name: Run linters using docker image
         run: >-
