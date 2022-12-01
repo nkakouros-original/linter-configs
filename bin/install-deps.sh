@@ -54,8 +54,6 @@ apt install -y "${packages[@]}"
 
 # go dependencies
 echo 'Installing go dependencies'
-pwd
-ls -al *
 cat vendor/deps.go | xargs go install
 
 # python dependencies

@@ -1,7 +1,7 @@
 ## Linter configurations
 
 This repo holds the linter configurations I use in my various projects. The
-configurations are usually on the tough side, i.e. most linting rules, features, dfdfdfdfdfdfddddfdffdfdfdfd
+configurations are usually on the tough side, i.e. most linting rules, features,
 etc enabled.
 
 ## Docker image

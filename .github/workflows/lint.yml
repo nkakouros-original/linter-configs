@@ -24,6 +24,9 @@ on:  # yamllint disable-line rule:truthy
         required: false
         default: false
         type: boolean
+      override_repo:
+        required: false
+        type: string
   push:
     branches: [master]
   pull_request:
@@ -50,6 +53,17 @@ jobs:
       - name: Checkout pull target
         run: |
           git branch ${{ inputs.base_ref }} --track origin/${{ inputs.base_ref }}
+
+      - name: Checkout override repo
+        if: ${{ inputs.override_repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.override-repo }}
+          path: override-repo
+
+      - name: Copy files from override repo
+        if: ${{ inputs.override_repo }}
+        run: cp ${{ github.workspace }}/${{ inputs.override_repo }}/* .
 
       - name: Run linters using docker image
         run: >-

@@ -89,6 +89,8 @@ if ! array_is_empty files; then
   pydocstyle "${files[@]}" || { error=1; } 2>/dev/null
   mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
   vulture "${files[@]}" || { error=1; } 2>/dev/null
+
+  npm --prefix vendor exec cspell --language-id python "${files[@]}" || { error=1; }
   { trap - DEBUG; set +x; } 2>/dev/null
 fi
 
@@ -106,6 +108,9 @@ if ! array_is_empty files; then
   npx remark --frail --quiet "${files[@]/#/$repo_dir/}" --rc-path ./.remarkrc.yml >/dev/null \
     || { error=1; } 2>/dev/null
   { cd -; } &>/dev/null
+
+  proselint "${files[@]}" || { error=1; } 2>/dev/null
+  npm --prefix /linter-configs/vendor/ exec cspell "${files[@]}" || { error=1; } 2>/dev/null
 
   { trap - DEBUG; set +x; } 2>/dev/null
 fi

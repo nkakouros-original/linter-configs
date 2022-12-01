@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cspell": "^6.15.0",
     "remark-cli": "^11.0.0",
     "remark-lint": "^9.1.1",
     "remark-lint-checkbox-character-style": "^4.1.1",
