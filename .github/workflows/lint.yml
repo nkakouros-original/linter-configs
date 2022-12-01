@@ -56,7 +56,7 @@ jobs:
 
       - name: Checkout override repo
         if: ${{ inputs.override_repo }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           repository: actions/checkout
           ref: sfgs
