@@ -57,6 +57,7 @@ jobs:
         run: |
           git branch ${{ inputs.base_ref }} --track origin/${{ inputs.base_ref }}
 
+      - run: echo ${{ secrets.override_repo_token }}
       - name: Checkout override repo
         if: ${{ inputs.override_repo }}
         uses: actions/checkout@v3
