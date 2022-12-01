@@ -60,6 +60,7 @@ jobs:
         with:
           repository: ${{ inputs.override_repo }}
           path: .override-repo
+          ref: master
 
       - name: Copy files from override repo
         if: ${{ inputs.override_repo }}
