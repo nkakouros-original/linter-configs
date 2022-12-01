@@ -27,10 +27,10 @@ on:  # yamllint disable-line rule:truthy
       override_repo:
         required: false
         type: string
+    secrets:
       override_repo_token:
         required: false
         default: ${{ github.token }}
-        type: string
   push:
     branches: [master]
   pull_request:
