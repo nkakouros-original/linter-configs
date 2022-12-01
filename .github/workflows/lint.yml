@@ -63,7 +63,12 @@ jobs:
 
       - name: Copy files from override repo
         if: ${{ inputs.override_repo }}
-        run: cp ../override-repo/* .
+        run: |
+          ls -al
+          ls -al ../
+          ls -al ../../
+          pwd
+          cp ../override-repo/* .
 
       - name: Run linters using docker image
         run: >-
