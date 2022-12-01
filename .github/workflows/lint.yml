@@ -30,7 +30,6 @@ on:  # yamllint disable-line rule:truthy
     secrets:
       override_repo_token:
         required: false
-        default: ${{ github.token }}
   push:
     branches: [master]
   pull_request:
@@ -64,7 +63,7 @@ jobs:
         with:
           repository: ${{ inputs.override_repo }}
           path: .override-repo
-          token: ${{ inputs.override_repo_token }}
+          token: ${{ secrets.override_repo_token }}
 
       - name: Copy files from override repo
         if: ${{ inputs.override_repo }}
