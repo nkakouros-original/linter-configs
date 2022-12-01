@@ -115,4 +115,5 @@ if ! array_is_empty files; then
   { trap - DEBUG; set +x; } 2>/dev/null
 fi
 
+echo
 exit "$error"
