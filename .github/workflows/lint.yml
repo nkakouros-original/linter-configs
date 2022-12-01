@@ -58,7 +58,7 @@ jobs:
         if: ${{ inputs.override_repo }}
         uses: actions/checkout@v3
         with:
-          repository: ${{ inputs.override-repo }}
+          repository: ${{ inputs.override_repo }}
           path: .override-repo
 
       - name: Copy files from override repo
