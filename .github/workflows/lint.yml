@@ -42,7 +42,7 @@ jobs:
       - name: Checkout pull target
         if: github.event_name == 'pull_request'
         run: |
-          git branch ${{ inputs.base_ref }} --track origin/${{ inputs.base_ref }}
+          git branch ${{ github.base_ref }} --track origin/${{ github.base_ref }}
 
       - name: Checkout override repo
         if: ${{ inputs.override_repo }}
@@ -64,7 +64,7 @@ jobs:
           -e GITHUB_ACTION=${{ github.action }}
           -e PR_MODE=${{ github.event_name == 'pull_request' }}
           -e DEBUG=${{ inputs.debug }}
-          -e BASE_REF=${{ inputs.base_ref }}
-          -e HEAD_REF=${{ inputs.head_ref }}
+          -e BASE_REF=${{ github.base_ref }}
+          -e HEAD_REF=${{ github.head_ref }}
           --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay
           nkakouros/linter-configs:latest
