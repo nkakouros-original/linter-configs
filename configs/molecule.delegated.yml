@@ -1,11 +1,16 @@
 ---
-dependency:
-  name: galaxy
 driver:
   name: delegated
+  options:
+    managed: false
+    ansible_connection_options:
+      ansible_connection: local
 platforms:
   - name: instance
 provisioner:
   name: ansible
+  playbooks:
+    create: /tmp/test_role1/molecule/default/create.yml
+    destroy: /tmp/test_role1/molecule/default/destroy.yml
 verifier:
   name: ansible
