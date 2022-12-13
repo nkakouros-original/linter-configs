@@ -71,7 +71,8 @@ find_files() {
     readarray -t files <<<"$(
       git log --oneline --name-only --pretty='format:' $base_branch..$head_branch -- \
         | sort -u \
-        | grep -P ".$type\$"
+        | grep -P ".$type\$" \
+        | xargs ls -d 2>/dev/null
     )"
   else
     readarray -t files <<<"$(git ls-files \*."$type")"
@@ -90,7 +91,7 @@ if ! array_is_empty files; then
   mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
   vulture "${files[@]}" || { error=1; } 2>/dev/null
 
-  npm --prefix vendor exec cspell --language-id python "${files[@]}" || { error=1; }
+  npm --prefix /linter-configs/vendor exec cspell --language-id python "${files[@]}" || { error=1; }
   { trap - DEBUG; set +x; } 2>/dev/null
 fi
 

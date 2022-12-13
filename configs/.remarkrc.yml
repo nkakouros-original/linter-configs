@@ -34,3 +34,4 @@ plugins:
 
   # preset overrides
   remark-lint-maximum-line-length: 88
+  remark-lint-list-item-indent: space
