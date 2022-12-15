@@ -93,42 +93,42 @@ find_files() {
 alias cspell="npm --prefix /linter-configs/vendor exec cspell $([[ -e cspell.txt ]] || echo --config /dev/null) --language-id"
 
 # Python
-# find_files py
-# if ! array_is_empty files; then
-#   info 'Linting Python files'
-#   bandit --silent "${files[@]}" || { error=1; } 2>/dev/null
-#   black --check --diff --quiet "${files[@]}" || { error=1; } 2>/dev/null
-#   flake8 "${files[@]}" || { error=1; } 2>/dev/null
-#   isort --check-only "${files[@]}" || { error=1; } 2>/dev/null
-#   pydocstyle "${files[@]}" || { error=1; } 2>/dev/null
-#   mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
-#   vulture "${files[@]}" || { error=1; } 2>/dev/null
-#
-#   cspell python "${files[@]}" || { error=1; }
-#   { trap - DEBUG; set +x; } 2>/dev/null
-# fi
-#
-# # markdown
-# find_files md
-# if ! array_is_empty files; then
-#   info 'Linting Markdown files'
-#   flake8-markdown "${files[*]}" | { error=1; } 2>/dev/null
-#
-#   {
-#     repo_dir="$PWD";
-#     cd /linter-configs/vendor;
-#     cp ../configs/.remarkrc.yml ./;
-#   }
-#   npx remark --frail --quiet "${files[@]/#/$repo_dir/}" --rc-path ./.remarkrc.yml >/dev/null \
-#     || { error=1; } 2>/dev/null
-#   { cd -; } &>/dev/null
-#
-#   proselint "${files[@]}" || { error=1; } 2>/dev/null
-#
-#   cspell markdown "${files[@]}" || { error=1; }
-#
-#   { trap - DEBUG; set +x; } 2>/dev/null
-# fi
+find_files py
+if ! array_is_empty files; then
+  info 'Linting Python files'
+  bandit --silent "${files[@]}" || { error=1; } 2>/dev/null
+  black --check --diff --quiet "${files[@]}" || { error=1; } 2>/dev/null
+  flake8 "${files[@]}" || { error=1; } 2>/dev/null
+  isort --check-only "${files[@]}" || { error=1; } 2>/dev/null
+  pydocstyle "${files[@]}" || { error=1; } 2>/dev/null
+  mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
+  vulture "${files[@]}" || { error=1; } 2>/dev/null
+
+  cspell python "${files[@]}" || { error=1; }
+  { trap - DEBUG; set +x; } 2>/dev/null
+fi
+
+# markdown
+find_files md
+if ! array_is_empty files; then
+  info 'Linting Markdown files'
+  flake8-markdown "${files[*]}" | { error=1; } 2>/dev/null
+
+  {
+    repo_dir="$PWD";
+    cd /linter-configs/vendor;
+    cp ../configs/.remarkrc.yml ./;
+  }
+  npx remark --frail --quiet "${files[@]/#/$repo_dir/}" --rc-path ./.remarkrc.yml >/dev/null \
+    || { error=1; } 2>/dev/null
+  { cd -; } &>/dev/null
+
+  proselint "${files[@]}" || { error=1; } 2>/dev/null
+
+  cspell markdown "${files[@]}" || { error=1; }
+
+  { trap - DEBUG; set +x; } 2>/dev/null
+fi
 
 # bash
 find_files sh
