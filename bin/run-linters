@@ -138,7 +138,7 @@ files=("${bash_files[@]}" "${files[@]}")
 if ! array_is_empty files; then
   shfmt $(<.shftm.rc) "${files[@]}" || { error=1; } 2>/dev/null
   shellcheck "${files[@]}" || { error=1; } 2>/dev/null
-  /linter-configs/bin/extra-lint-bash "${files[@]}"
+  /linter-configs/bin/extra-lint-bash.sh "${files[@]}"
 fi
 
 exit "$error"
