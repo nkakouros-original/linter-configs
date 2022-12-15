@@ -11,7 +11,7 @@ scripts. The script does not verify this in any way.
 
 To disable a rule for a line append a comment like:
 
-    # twmn-lint-bash disable=TWMN-1001
+    # extra-lint-bash disable=ELB-1001
 
 Alternatively, you can add this comment in the line immediately above.
 
@@ -50,29 +50,30 @@ function check_rule() {
       return
     fi
 
-    file="${line%%:*}"
-    lineno="${line#*:}"
+    # If a single file is passed to grep, `-n` will not output the path to the
+    # file.
+    [[ "${#files[@]}" -eq 1 ]] && file="${files[0]}" || file="${line%%:*}"
+    [[ "${#files[@]}" -eq 1 ]] || lineno="${line#*:}"
     lineno="${lineno%%:*}"
-    line="${line/$file:$lineno:/}"
+    [[ "${#files[@]}" -eq 1 ]] && line="${line#*:}" || line="${line/$file:$lineno:/}"
 
     readarray -t wholefile <"$file"
 
-    if [[ "${wholefile[$((lineno - 2))]}" =~ ^[\ ]*\#\ twmn-lint-bash\ disable=TWMN-$id ]] \
-      || [[ "$line" =~ \#\ twmn-lint-bash\ disable=TWMN-$id$ ]]; then
+    if [[ "$((lineno - 2))" -gt 0 ]] \
+      && [[ "${wholefile[$((lineno - 2))]}" =~ ^[\ ]*\#\ extra-lint-bash\ disable=ELB-$id ]] \
+      || [[ "$line" =~ \#\ extra-lint-bash\ disable=ELB-$id$ ]]; then
       continue
     fi
 
     printf '%s\n    %s\n        %s\n\n' \
       "$file:$lineno" \
-      "TWMN-$id: $message" \
+      "ELB-$id: $message" \
       "$line"
   done <<<"$(grep -rnP "$pattern" "${files[@]}" || :)"
 
   result=1
 }
 
-check_rule '1001' "use bash's double brackets for testing" '^\s*(if )?(! )?\[ [^[\]]+ \]' "$@"
-check_rule '1002' 'use double quotes to avoid trouble (in the future or now)' '^[^"=]+=([^" ]*)(("[^"]*")*)([^" ]*)(\$\w+)[^"]*$' "$@"
 check_rule '1003' 'use double equals for equality checking' '\[\[? .+ = .+ \]?\]' "$@"
 check_rule '1004' 'no multiple assignments in one line' '^[a-zA-Z_]+=[^ ]+ [a-zA-Z_]+=[^ ]+' "$@"
 

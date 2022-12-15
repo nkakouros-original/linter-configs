@@ -1,0 +1,7 @@
+--list
+--simplify
+--indent 2
+--binary-next-line
+--case-indent
+--keep-padding
+--diff

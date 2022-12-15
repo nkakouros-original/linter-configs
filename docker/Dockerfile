@@ -8,7 +8,7 @@ VOLUME /repo
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends tzdata
+    apt-get install -y --no-install-recommends tzdata vim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
