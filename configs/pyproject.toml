@@ -1,4 +1,9 @@
+[tool.bandit]
+silent = true
+
 [tool.black]
+quiet = true
+check = true
 
 [tool.flake8]
 max-line-length = 88
@@ -32,7 +37,7 @@ profile = "black"
 known_first_party = ["twmn", "twmn_helpers", "cds", "canvas"]
 
 [tool.mypy]
-cache_dir = "/tmp/mypy"
+# cache_dir = "/tmp/mypy"
 show_traceback = true
 local_partial_types = true
 explicit_package_bases = true

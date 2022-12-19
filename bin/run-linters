@@ -6,7 +6,8 @@ shopt -s extglob
 shopt -s globstar
 
 array_is_empty() {
-  if [[ "$(declare -p "$1")" == "declare -a $1=([0]=\"\")" ]]; then
+  if [[ "$(declare -p "$1")" == "declare -a $1=([0]=\"\")" ]] ||
+     [[ ! -v "$1" ]]; then
     return 0
   fi
   return 1
@@ -19,7 +20,7 @@ info() {
     export PS4="\n\033[1;33mRunning linter: \033[0m"
     set -x
   else
-    trap "[[ \$BASH_COMMAND == !(trap\ *|error=*|cd\ *|exit\ *|cp\ *|rm\ *|[) ]] && info \$BASH_COMMAND" DEBUG
+    trap "[[ \$BASH_COMMAND == !(\[*|trap\ *|error=*|cd\ *|exit\ *|cp\ *|rm\ *) ]] && info \$BASH_COMMAND" DEBUG
   fi
 }
 
@@ -97,6 +98,16 @@ find_files() {
     )"
   fi
 
+  declare -A unique_files
+
+  for i in "${files[@]}"; do
+    if [[ "$i" != '' ]]; then
+      unique_files["$i"]=1
+    fi
+  done
+
+  files=("${!unique_files[@]}")
+
   absolute_files=("${files[@]/#/$PWD/}")
 }
 
@@ -108,8 +119,8 @@ alias cspell="{ [[ ! -r cspell.txt ]] && rm -f cspell.json; } 2>/dev/null || :;
 find_files py python
 if ! array_is_empty files; then
   info 'Linting Python files'
-  bandit --silent "${files[@]}" || { error=1; } 2>/dev/null
-  black --check --diff --quiet "${files[@]}" || { error=1; } 2>/dev/null
+  bandit "${files[@]}" || { error=1; } 2>/dev/null
+  black "${files[@]}" || { error=1; } 2>/dev/null
   flake8 "${files[@]}" || { error=1; } 2>/dev/null
   isort --check-only "${files[@]}" || { error=1; } 2>/dev/null
   pydocstyle "${files[@]}" || { error=1; } 2>/dev/null
@@ -121,6 +132,7 @@ fi
 
 # markdown
 find_files md markdown
+declare -p files
 if ! array_is_empty files; then
   info 'Linting Markdown files'
   flake8-markdown "${files[*]}" | { error=1; } 2>/dev/null
