@@ -2,7 +2,9 @@
 
 dependency:
   name: shell
-  command: ansible-galaxy install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml'
+  command: >
+    [[ -e '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml' ]] &&
+    ansible-galaxy install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml'
 driver:
   name: ${CUSTOM_MOLECULE_DRIVER:-docker}
 lint: |

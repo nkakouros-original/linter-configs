@@ -15,6 +15,13 @@ on:  # yamllint disable-line rule:truthy
       override_repo:
         required: false
         type: string
+
+      mypypath:
+        required: false
+        type: string
+      ansible_collections_dirs:
+        required: false
+        type: string
     secrets:
       override_repo_token:
         required: false
@@ -66,5 +73,7 @@ jobs:
           -e DEBUG=${{ inputs.debug }}
           -e BASE_REF=${{ github.base_ref }}
           -e HEAD_REF=${{ github.head_ref }}
+          -e MYPYPATH=${{ inputs.mypypath }}
+          -e ANSIBLE_COLLECTIONS_DIRS=${{ inputs.ansible_collections_dirs }}
           --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay
           nkakouros/linter-configs:latest

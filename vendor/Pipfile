@@ -46,6 +46,10 @@ yamllint = '*'
 
 # Ansible
 ansible-lint = "*"
+molecule = "*"
+molecule-docker = "*"
+molecule-podman = "*"
+molecule-gce = "*"
 
 # English
 proselint = '*'

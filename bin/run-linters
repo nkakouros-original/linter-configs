@@ -2,6 +2,8 @@
 
 set -euo pipefail
 shopt -s expand_aliases
+shopt -s extglob
+shopt -s globstar
 
 array_is_empty() {
   if [[ "$(declare -p "$1")" == "declare -a $1=([0]=\"\")" ]]; then
@@ -17,9 +19,11 @@ info() {
     export PS4="\n\033[1;33mRunning linter: \033[0m"
     set -x
   else
-    trap "[[ \$BASH_COMMAND == !(trap\ *|error=*|cd\ *|exit\ *|cp\ *|rm\ *) ]] && info \$BASH_COMMAND" DEBUG
+    trap "[[ \$BASH_COMMAND == !(trap\ *|error=*|cd\ *|exit\ *|cp\ *|rm\ *|[) ]] && info \$BASH_COMMAND" DEBUG
   fi
 }
+
+alias fi='{ trap - DEBUG; set +x; } 2>/dev/null; fi'
 
 find_head_branch() {
   head="${HEAD_REF:-}"
@@ -63,37 +67,45 @@ if [[ "$pr_mode" == true ]]; then
 fi
 
 error=0
-declare -a files=()
 
 find_files() {
-  type="$1"
+  extension="$1"
+  language="${2-}"
 
   if [[ "$pr_mode" == true ]]; then
     readarray -t files <<<"$(
       git log --oneline --name-only --pretty='format:' $base_branch..$head_branch -- \
         | sort -u \
         | xargs ls -d 2>/dev/null \
-        | grep -P ".$type\$"
+        | xargs -L1 bash -c '[[ -d "$0" ]] || echo "$0"' \
+        | grep -P ".$extension\$"
 
-      git log --oneline --name-only --pretty='format:' $base_branch..$head_branch -- \
-        | sort -u \
-        | xargs ls -d 2>/dev/null \
-        | xargs head -n1 --quiet \
-        | grep -P "( |/)$type\$"
+      [[ -v language ]] \
+        && git log --oneline --name-only --pretty='format:' $base_branch..$head_branch -- \
+           | sort -u \
+           | xargs ls -d 2>/dev/null \
+           | xargs -L1 bash -c '[[ -d "$0" ]] || echo "$0"' \
+           | xargs awk 'FNR>1 {nextfile} /( |\/)'$language'$/ { print FILENAME; nextfile }'
     )"
   else
-    readarray -t files <<<"$(git ls-files \*."$type")"
     readarray -t files <<<"$(
-      git ls-files \
-      | xargs awk 'FNR>1 {nextfile} /( |\/)'$type'$/ { print FILENAME; nextfile }'
+      git ls-files \*."$extension"
+
+      [[ -v language ]] \
+        && git ls-files \
+           | xargs awk 'FNR>1 {nextfile} /( |\/)'$language'$/ { print FILENAME; nextfile }'
     )"
   fi
+
+  absolute_files=("${files[@]/#/$PWD/}")
 }
 
-alias cspell="npm --prefix /linter-configs/vendor exec cspell $([[ -e cspell.txt ]] || echo --config /dev/null) --language-id"
+alias cspell="{ [[ ! -r cspell.txt ]] && rm -f cspell.json; } 2>/dev/null || :;
+                npm --prefix /linter-configs/vendor exec -- cspell lint \
+                  $([[ -e cspell.txt ]] || echo --config /dev/null) --language-id"
 
 # Python
-find_files py
+find_files py python
 if ! array_is_empty files; then
   info 'Linting Python files'
   bandit --silent "${files[@]}" || { error=1; } 2>/dev/null
@@ -104,41 +116,60 @@ if ! array_is_empty files; then
   mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
   vulture "${files[@]}" || { error=1; } 2>/dev/null
 
-  cspell python "${files[@]}" || { error=1; }
-  { trap - DEBUG; set +x; } 2>/dev/null
+  cspell python "${absolute_files[@]}" || { error=1; } 2>/dev/null
 fi
 
 # markdown
-find_files md
+find_files md markdown
 if ! array_is_empty files; then
   info 'Linting Markdown files'
   flake8-markdown "${files[*]}" | { error=1; } 2>/dev/null
 
   {
-    repo_dir="$PWD";
     cd /linter-configs/vendor;
     cp ../configs/.remarkrc.yml ./;
   }
-  npx remark --frail --quiet "${files[@]/#/$repo_dir/}" --rc-path ./.remarkrc.yml >/dev/null \
+  npx remark --frail --quiet "${absolute_files[@]}" --rc-path ./.remarkrc.yml >/dev/null \
     || { error=1; } 2>/dev/null
   { cd -; } &>/dev/null
 
   proselint "${files[@]}" || { error=1; } 2>/dev/null
 
-  cspell markdown "${files[@]}" || { error=1; }
-
-  { trap - DEBUG; set +x; } 2>/dev/null
+  cspell markdown "${absolute_files[@]}" || { error=1; }
 fi
 
 # bash
-find_files sh
-! array_is_empty files && bash_files=("${files[@]}")
-find_files bash
-files=("${bash_files[@]}" "${files[@]}")
+find_files sh bash
 if ! array_is_empty files; then
-  shfmt $(<.shftm.rc) "${files[@]}" || { error=1; } 2>/dev/null
+  info 'Linting Bash files'
+  shfmt $(<.shfmt.rc) "${files[@]}" || { error=1; } 2>/dev/null
   shellcheck "${files[@]}" || { error=1; } 2>/dev/null
-  /linter-configs/bin/extra-lint-bash.sh "${files[@]}"
+  /linter-configs/bin/extra-lint-bash.sh "${files[@]}" || { error=1; } 2>/dev/null
+  cspell shell "${absolute_files[@]}" || { error=1; } 2>/dev/null
 fi
+
+# yaml
+find_files yml
+if ! array_is_empty files; then
+  info 'Linting YAML files'
+  yamllint "${files[@]}" || { error=1; } 2>/dev/null
+fi
+
+# ansible
+# ANSIBLE_COLLECTIONS_DIRS="${ANSIBLE_COLLECTIONS_DIRS-}"
+# mapfile -t paths <<< "${ANSIBLE_COLLECTIONS_DIRS//:/$'\n'}"
+# pip install molecule molecule-podman molecule-docker
+# if ! array_is_empty paths; then
+#   eval role_paths=( "${paths[@]/%//ansible_collections/*/*/roles/**/*/molecule}" )
+#   for role_path in "${role_paths[@]}"; do
+#     if [[ -d "$role_path" ]]; then
+#       (
+#         cd "${role_path%/molecule*}"
+#         pwd
+#         molecule -c /repo/molecule.yml test
+#       ) || error=1
+#     fi
+#   done
+# fi
 
 exit "$error"

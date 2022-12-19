@@ -6,6 +6,7 @@ mkdir -p ~/.ssh
 ssh-keyscan -t rsa github.com > ~/.ssh/known_hosts 2>/dev/null
 
 cp -r /linter-configs/configs/* /repo/
+cp -r /linter-configs/configs/.* /repo/
 export PATH=${PATH}:`go env GOPATH`/bin
 
 if [[ "$#" -gt 0 ]]; then
