@@ -32,13 +32,13 @@ profile = "black"
 known_first_party = ["twmn", "twmn_helpers", "cds", "canvas"]
 
 [tool.mypy]
-namespace_packages = true
 cache_dir = "/tmp/mypy"
-disallow_untyped_defs = true
 show_traceback = true
-strict_equality = true
 local_partial_types = true
 explicit_package_bases = true
-follow_imports = "silent"
+strict = true
+pretty = true
+show_error_codes = true
+show_error_context = true
 
 [tool.pydocstyle]
