@@ -6,7 +6,7 @@ quiet = true
 check = true
 
 [tool.flake8]
-max-line-length = 88
+max-line-length = 58
 select = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ]
 
 ignore = ['E501', 'W503', 'W505', 'E402', 'E203', 'B404', 'EXE001']
@@ -21,21 +21,14 @@ ignore = ['E501', 'W503', 'W505', 'E402', 'E203', 'B404', 'EXE001']
 # Do not complain about imported modules that do not have type annotations
 ignore_missing_imports = true
 
-# flake8-type-checking
-type-checking-strict = true
-
-# flake8-unused-arguments
 unused_arguments_ignore_abstract_functions = true
 unused_arguments_ignore_stub_functions = true
 
-# flake8-noqa
 noqa_require_code = true
 
-# flake8-secure-coding-standard
-os-mkdir-mode = 0o755
-os-open-mode = 0o755
-os-mkfifo-mode = 0o640
-os-mknod-mode = 0o640
+os-mkdir-mode = 0o444
+# os_mkfifo_mode = 0o640
+# os_mknod_mode = 0o640
 
 [tool.isort]
 profile = "black"

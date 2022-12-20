@@ -75,5 +75,6 @@ jobs:
           -e HEAD_REF=${{ github.head_ref }}
           -e MYPYPATH=${{ inputs.mypypath }}
           -e ANSIBLE_COLLECTIONS_DIRS=${{ inputs.ansible_collections_dirs }}
+          -v /var/run/docker.sock:/var/run/docker.sock
           --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay
           nkakouros/linter-configs:latest

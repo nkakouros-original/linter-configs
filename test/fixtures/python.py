@@ -24,7 +24,8 @@ class myclass:
         assert yaml.load("{}") == []  # nosec assert_used
         q: List = []
         # mkdir os
-        os.mkdir('/home/q', mode=0o777)
+        os.mkdir('/home/q', mode=777)
+        os.open('home/q', mode=777)
 
     def helper(self): pass
     def user(self): self.helper()

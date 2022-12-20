@@ -115,6 +115,8 @@ alias cspell="{ [[ ! -r cspell.txt ]] && rm -f cspell.json; } 2>/dev/null || :;
                 npm --prefix /linter-configs/vendor exec -- cspell lint \
                   $([[ -e cspell.txt ]] || echo --config /dev/null) --language-id"
 
+export PROJECT_DIR="$PWD" 2>/dev/null
+
 # Python
 find_files py python
 if ! array_is_empty files; then
@@ -168,20 +170,56 @@ if ! array_is_empty files; then
 fi
 
 # ansible
-# ANSIBLE_COLLECTIONS_DIRS="${ANSIBLE_COLLECTIONS_DIRS-}"
-# mapfile -t paths <<< "${ANSIBLE_COLLECTIONS_DIRS//:/$'\n'}"
-# pip install molecule molecule-podman molecule-docker
-# if ! array_is_empty paths; then
-#   eval role_paths=( "${paths[@]/%//ansible_collections/*/*/roles/**/*/molecule}" )
-#   for role_path in "${role_paths[@]}"; do
-#     if [[ -d "$role_path" ]]; then
-#       (
-#         cd "${role_path%/molecule*}"
-#         pwd
-#         molecule -c /repo/molecule.yml test
-#       ) || error=1
-#     fi
-#   done
-# fi
+find_files yml
+
+ANSIBLE_COLLECTIONS_DIRS="${ANSIBLE_COLLECTIONS_DIRS-}"
+mapfile -t paths <<< "${ANSIBLE_COLLECTIONS_DIRS//:/$'\n'}"
+if ! array_is_empty paths; then
+  molecule_roles=()
+  eval role_paths=( "${paths[@]/%//ansible_collections/*/*/roles/**/*/molecule}" )
+  for role_path in "${role_paths[@]}"; do
+    if [[ -d "$role_path" ]]; then
+      molecule_roles+=("${role_path%/molecule*}")
+    fi
+  done
+
+  declare -A touched_roles
+
+  if [[ "$PR_MODE" == true ]]; then
+    for molecule_role in "${molecule_roles[@]}"; do
+      for file in "${files[@]}"; do
+        if [[ "${file#$molecule_role}" != "$file" ]]; then
+          touched_roles["$molecule_role"]=1
+          break
+        fi
+      done
+    done
+  else
+    for role in "${molecule_roles[@]}"; do
+      touched_roles["$role"]=1
+    done
+  fi
+fi
+
+if ! array_is_empty files; then
+  info 'Linting Ansible content'
+  ansible-lint "${files[@]}" || { error=1; } 2>/dev/null
+
+  if [[ "$PR_MODE" == true ]] 2>/dev/null; then
+    for role in "${!touched_roles[@]}"; do
+        cd "$role"
+        molecule -c /repo/molecule.yml test || { error=1; } 2>/dev/null
+        { cd -; } 2>/dev/null
+    done
+  fi
+fi
+
+
+# ini files
+find_files ini
+if ! array_is_empty files; then
+  info 'Linting ini files'
+  npm --prefix vendor exec inilint "${files[@]}" || { error=1; } 2>/dev/null
+fi
 
 exit "$error"

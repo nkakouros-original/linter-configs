@@ -14,6 +14,7 @@ strict: true
 skip_list:
   - yaml  # yamllint will be run separately
   - fqcn-builtins
+  - meta-no-info
 
   # TODO disabled due to https://github.com/ansible/ansible-lint/issues/2079
   - no-loop-var-prefix
