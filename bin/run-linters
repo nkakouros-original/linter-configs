@@ -72,6 +72,9 @@ error=0
 find_files() {
   extension="$1"
   language="${2-}"
+  extend="${3-false}"
+
+  local old_files="${files[@]}"
 
   if [[ "$pr_mode" == true ]]; then
     readarray -t files <<<"$(
@@ -96,6 +99,10 @@ find_files() {
         && git ls-files \
            | xargs awk 'FNR>1 {nextfile} /( |\/)'$language'$/ { print FILENAME; nextfile }'
     )"
+  fi
+
+  if [[ "$extend" == true ]]; then
+    files=("${old_files[@]}" "${files[@]}")
   fi
 
   declare -A unique_files
@@ -157,7 +164,7 @@ if ! array_is_empty files; then
   shfmt $(<.shfmt.rc) "${files[@]}" || { error=1; } 2>/dev/null
   shellcheck "${files[@]}" || { error=1; } 2>/dev/null
   /linter-configs/bin/extra-lint-bash.sh "${files[@]}" || { error=1; } 2>/dev/null
-  cspell shell "${absolute_files[@]}" || { error=1; } 2>/dev/null
+  cspell bash "${absolute_files[@]}" || { error=1; } 2>/dev/null
 fi
 
 # yaml
@@ -210,14 +217,18 @@ if ! array_is_empty files; then
         { cd -; } 2>/dev/null
     done
   fi
+
+  cspell bash "${absolute_files[@]}" || { error=1; } 2>/dev/null
 fi
 
 
 # ini files
 find_files ini
+find_files cfg '' true
 if ! array_is_empty files; then
   info 'Linting ini files'
   npm --prefix vendor exec inilint "${files[@]}" || { error=1; } 2>/dev/null
+  cspell bash "${absolute_files[@]}" || { error=1; } 2>/dev/null
 fi
 
 exit "$error"
