@@ -1,8 +1,0 @@
-{
-  "dictionaries": ["custom-cspell-dict"],
-  "dictionaryDefinitions": [{
-    "name": "custom-cspell-dict",
-    "path": "cspell.txt",
-    "addWords": true
-  }]
-}

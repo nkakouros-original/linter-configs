@@ -111,9 +111,7 @@ find_files() {
   absolute_files=("${files[@]/#/$PWD/}")
 }
 
-alias cspell="{ [[ ! -r cspell.txt ]] && rm -f cspell.json; } 2>/dev/null || :;
-                npm --prefix /linter-configs/vendor exec -- cspell lint \
-                  $([[ -e cspell.txt ]] || echo --config /dev/null) --language-id"
+alias cspell="npm --prefix /linter-configs/vendor exec -- cspell lint --language-id"
 
 export PROJECT_DIR="$PWD" 2>/dev/null
 
@@ -141,7 +139,7 @@ if ! array_is_empty files; then
 
   {
     cd /linter-configs/vendor;
-    cp ../configs/.remarkrc.yml ./;
+    cp -n ../configs/.remarkrc.yml ./;
   }
   npx remark --frail --quiet "${absolute_files[@]}" --rc-path ./.remarkrc.yml >/dev/null \
     || { error=1; } 2>/dev/null
