@@ -52,6 +52,8 @@ readarray -t packages <<<"$(grep -vE "^\s*#|^\s*$" vendor/packages.apt)"
 apt update
 apt install -y "${packages[@]}"
 
+vendor/packages.sh
+
 # go dependencies
 echo 'Installing go dependencies'
 cat vendor/deps.go | xargs go install

@@ -212,7 +212,7 @@ if ! array_is_empty files; then
 
   if [[ "$PR_MODE" == true ]] 2>/dev/null; then
     for role in "${!touched_roles[@]}"; do
-        cd "$role"
+        { cd "$role"; } 2>/dev/null
         molecule -c /repo/molecule.yml test || { error=1; } 2>/dev/null
         { cd -; } 2>/dev/null
     done
