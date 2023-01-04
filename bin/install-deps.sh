@@ -79,3 +79,7 @@ while IFS=, read -r project app pattern extract; do
   [[ "$project" =~ (^\s*\#)|^\s*$ ]] && continue
   _download_latest_from_github "$project" "$app" "$pattern" "$extract"
 done < vendor/repos.gh
+
+# ansible deps
+source vendor/python/bin/activate
+ansible-galaxy collection install -r vendor/requirements.yml

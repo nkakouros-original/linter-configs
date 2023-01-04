@@ -13,7 +13,7 @@ driver:
 lint: |
   set -e
   yamllint -c "${PROJECT_DIR-.}/.yamllint" .
-  ansible-lint -c "${PROJECT_DIR-.}/.ansible-lint" .
+  ansible-lint -c "${PROJECT_DIR-.}/.ansible-lint" . molecule
 platforms:
   - name: ${CUSTOM_MOLECULE_INSTANCE_NAME:-molecule-test}
     image: ${CUSTOM_MOLECULE_CONTAINER_IMAGE:-geerlingguy/docker-ubuntu1804-ansible:latest}

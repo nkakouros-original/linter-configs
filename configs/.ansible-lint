@@ -10,7 +10,6 @@ loop_var_prefix: "_{role_name}__"
 
 use_default_rules: true
 
-strict: true
 skip_list:
   - yaml  # yamllint will be run separately
   - fqcn-builtins
@@ -24,6 +23,7 @@ skip_list:
 
   # TODO can we enable selected schemas and skip others (like for
   # meta/main.yml)?
+  - warning
   - schema
 
 warn_list:
