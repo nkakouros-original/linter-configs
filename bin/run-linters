@@ -126,7 +126,7 @@ export PROJECT_DIR="$PWD" 2>/dev/null
 find_files py python
 if ! array_is_empty files; then
   info 'Linting Python files'
-  bandit "${files[@]}" || { error=1; } 2>/dev/null
+  bandit -c pyproject.toml "${files[@]}" || { error=1; } 2>/dev/null
   black "${files[@]}" || { error=1; } 2>/dev/null
   flake8 "${files[@]}" || { error=1; } 2>/dev/null
   isort --check-only "${files[@]}" || { error=1; } 2>/dev/null

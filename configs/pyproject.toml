@@ -1,5 +1,6 @@
 [tool.bandit]
 silent = true
+assert_used = {skips = ["*/test_*.py"]}
 
 [tool.black]
 quiet = true
