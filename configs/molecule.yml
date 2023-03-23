@@ -12,7 +12,7 @@ driver:
   name: ${CUSTOM_MOLECULE_DRIVER:-docker}
 lint: |
   set -e
-  yamllint -c "${PROJECT_DIR-.}/.yamllint" .
+  yamllint -c "${PROJECT_DIR-.}/.yamllint" . molecule
   ansible-lint -c "${PROJECT_DIR-.}/.ansible-lint" . molecule
 platforms:
   - name: ${CUSTOM_MOLECULE_INSTANCE_NAME:-molecule-test}
@@ -29,6 +29,7 @@ provisioner:
       any_unparsed_is_failed: true
       unparsed_is_failed: true
       any_errors_fatal: true
+      remote_tmp: /tmp
   playbooks:
     side_effect: side_effect.yml
 verifier:

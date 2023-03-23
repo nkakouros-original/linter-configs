@@ -39,12 +39,14 @@ isort = '*'
 mypy = '*'
 pep8-naming = '*'
 pydocstyle = '*'
+pytest = '*'
 vulture = '*'
 
 # YAML
 yamllint = '*'
 
 # Ansible
+ansible = "*"
 ansible-lint = "*"
 molecule = "*"
 molecule-docker = "*"

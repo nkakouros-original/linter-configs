@@ -184,6 +184,7 @@ if ! array_is_empty paths; then
   eval role_paths=( "${paths[@]/%//ansible_collections/*/*/roles/**/*/molecule}" )
   for role_path in "${role_paths[@]}"; do
     if [[ -d "$role_path" ]]; then
+      role_path="${role_path///\///}"
       molecule_roles+=("${role_path%/molecule*}")
     fi
   done

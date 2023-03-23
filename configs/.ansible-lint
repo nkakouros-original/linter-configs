@@ -23,7 +23,6 @@ skip_list:
 
   # TODO can we enable selected schemas and skip others (like for
   # meta/main.yml)?
-  - warning
   - schema
 
 warn_list:
@@ -42,8 +41,8 @@ offline: false
 
 # List of additional kind:pattern to be added at the top of the default
 # match list, first match determines the file kind.
-kinds: []
-  # - playbook: "**/examples/*.{yml,yaml}"
+kinds: 
+  # - playbook: "**/plays/*.{yml,yaml}"
   # - galaxy: "**/folder/galaxy.yml"
   # - tasks: "**/tasks/*.yml"
   # - vars: "**/vars/*.yml"
