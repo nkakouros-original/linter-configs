@@ -4,9 +4,10 @@ dependency:
   name: shell
   command: >
     bash -c "
-    [[ -e '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml' ]] &&
-    ansible-galaxy install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml' ||
-    :
+      if [[ -e '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml' ]]; then
+        ansible-galaxy role install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml' || :;
+        ansible-galaxy collection install -r '${MOLECULE_SCENARIO_DIRECTORY}/requirements.yml' || :;
+      fi
     "
 driver:
   name: ${CUSTOM_MOLECULE_DRIVER:-docker}
