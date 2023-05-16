@@ -75,15 +75,15 @@ jobs:
           mkdir -p /tmp/upper /tmp/workdir;
           docker run
           --pull always -t --rm
-          -e GITHUB_ACTION=${{ github.action }}
-          -e PR_MODE=${{ github.event_name == 'pull_request' }}
-          -e DEBUG=${{ inputs.debug }}
-          -e BASE_REF=${{ github.base_ref }}
-          -e HEAD_REF=${{ github.head_ref }}
-          -e MYPYPATH=${{ inputs.mypypath }}
-          -e MYPY_PYTHON_EXE=${{ inputs.mypy_python_exe }}
-          -e PYTHON_DEPS_CMD=${{ inputs.python_deps_cmd }}
-          -e ANSIBLE_COLLECTIONS_DIRS=${{ inputs.ansible_collections_dirs }}
+          -e GITHUB_ACTION="${{ github.action }}"
+          -e PR_MODE="${{ github.event_name == 'pull_request' }}"
+          -e DEBUG="${{ inputs.debug }}"
+          -e BASE_REF="${{ github.base_ref }}"
+          -e HEAD_REF="${{ github.head_ref }}"
+          -e MYPYPATH="${{ inputs.mypypath }}"
+          -e MYPY_PYTHON_EXE="${{ inputs.mypy_python_exe }}"
+          -e PYTHON_DEPS_CMD="${{ inputs.python_deps_cmd }}"
+          -e ANSIBLE_COLLECTIONS_DIRS="${{ inputs.ansible_collections_dirs }}"
           -v /var/run/docker.sock:/var/run/docker.sock
           --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay
           nkakouros/linter-configs:latest
