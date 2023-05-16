@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /linter-configs/vendor/python/bin/activate
-
 mkdir -p ~/.ssh
 ssh-keyscan -t rsa github.com > ~/.ssh/known_hosts 2>/dev/null
 

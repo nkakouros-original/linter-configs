@@ -4,4 +4,5 @@ golang
 jq
 npm
 python3-pip
+python3-venv
 sed

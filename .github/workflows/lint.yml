@@ -19,6 +19,13 @@ on:  # yamllint disable-line rule:truthy
       mypypath:
         required: false
         type: string
+      mypy_python_exe:
+        required: false
+        type: string
+      python_deps_cmd:
+        required: false
+        type: string
+
       ansible_collections_dirs:
         required: false
         type: string
@@ -74,6 +81,8 @@ jobs:
           -e BASE_REF=${{ github.base_ref }}
           -e HEAD_REF=${{ github.head_ref }}
           -e MYPYPATH=${{ inputs.mypypath }}
+          -e MYPY_PYTHON_EXE=${{ inputs.mypy_python_exe }}
+          -e PYTHON_DEPS_CMD=${{ inputs.python_deps_cmd }}
           -e ANSIBLE_COLLECTIONS_DIRS=${{ inputs.ansible_collections_dirs }}
           -v /var/run/docker.sock:/var/run/docker.sock
           --mount type=volume,dst=/repo,volume-driver=local,volume-opt=type=overlay,\"volume-opt=o=lowerdir=${PWD}/,upperdir=/tmp/upper,workdir=/tmp/workdir\",volume-opt=device=overlay

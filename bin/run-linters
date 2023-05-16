@@ -5,6 +5,8 @@ shopt -s expand_aliases
 shopt -s extglob
 shopt -s globstar
 
+LINTER_CONFIGS_DIR="$(dirname "$(cd "$(dirname "$0")" && pwd)")"
+
 array_is_empty() {
   if [[ "$(declare -p "$1")" == "declare -a $1=([0]=\"\")" ]] ||
      [[ ! -v "$1" ]]; then
@@ -118,12 +120,22 @@ find_files() {
   absolute_files=("${files[@]/#/$PWD/}")
 }
 
-alias cspell="npm --prefix /linter-configs/vendor exec -- cspell lint --language-id"
+install_deps() {
+  if [[ $1 == 'python' ]]; then
+    if [[ -v PYTHON_DEPS_CMD ]]; then
+      eval "$PYTHON_DEPS_CMD"
+      return
+    fi
+  fi
+}
+
+alias cspell="npm --prefix "$LINTER_CONFIGS_DIR/vendor" exec -- cspell lint --language-id"
 
 export PROJECT_DIR="$PWD" 2>/dev/null
 
 # Python
 find_files py python
+install_deps python
 if ! array_is_empty files; then
   info 'Linting Python files'
   bandit -c pyproject.toml "${files[@]}" || { error=1; } 2>/dev/null
@@ -131,7 +143,8 @@ if ! array_is_empty files; then
   flake8 "${files[@]}" || { error=1; } 2>/dev/null
   isort --check-only "${files[@]}" || { error=1; } 2>/dev/null
   pydocstyle "${files[@]}" || { error=1; } 2>/dev/null
-  mypy --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
+  mypy --python-executable "${MYPY_PYTHON_EXE:-$(which python)}" \
+    --install-types --non-interactive "${files[@]}" || { error=1; } 2>/dev/null
   vulture "${files[@]}" || { error=1; } 2>/dev/null
 
   cspell python "${absolute_files[@]}" || { error=1; } 2>/dev/null

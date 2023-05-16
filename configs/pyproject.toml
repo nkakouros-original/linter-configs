@@ -10,7 +10,7 @@ check = true
 max-line-length = 88
 select = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ]
 
-ignore = ['E501', 'W503', 'W505', 'E402', 'E203', 'B404', 'EXE001', 'SCS108']
+ignore = ['E501', 'W503', 'W505', 'E402', 'E203', 'B404', 'EXE001', 'PAR104', 'SCS108']
 # E501 Line too long (pycodestyle)
 # W503 Line break occurred before a binary operator (pycodestyle)
 # W505 doc line too long (82 > 79 characters)
@@ -18,6 +18,8 @@ ignore = ['E501', 'W503', 'W505', 'E402', 'E203', 'B404', 'EXE001', 'SCS108']
 # E203 Whitespace before ':' (pycodestyle)
 # B404 bandit: sec implications of subprocess module
 # EXE001: Shebang is present but the file is not executable
+# PAR104:picky-parentheses: Only operators and comments are allowed after a
+#        closing bracket on a new line.
 # SCS108: assert check, already done by vulture which is easier to configure to avoid test files
 
 # Do not complain about imported modules that do not have type annotations
@@ -52,5 +54,6 @@ strict = true
 pretty = true
 show_error_codes = true
 show_error_context = true
+warn_unreachable = true
 
 [tool.pydocstyle]

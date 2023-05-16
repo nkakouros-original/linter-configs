@@ -25,6 +25,7 @@ platforms:
     override_command: false
 provisioner:
   name: ansible
+  log: true
   config_options:
     defaults:
       duplicate_dict_key: error
@@ -32,6 +33,7 @@ provisioner:
       unparsed_is_failed: true
       any_errors_fatal: true
       remote_tmp: /tmp
+      local_tmp: /tmp
   playbooks:
     side_effect: side_effect.yml
 verifier:

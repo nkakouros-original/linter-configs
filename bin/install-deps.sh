@@ -60,12 +60,9 @@ cat vendor/deps.go | xargs go install
 
 # python dependencies
 echo 'Installing python dependencies'
-pip install virtualenv
-virtualenv vendor/python
 pip install pipenv
 export PIPENV_PIPFILE='vendor/Pipfile'
-export VIRTUAL_ENV='python/'  # relative to Pipfile
-pipenv install
+pipenv install --system --skip-lock
 
 # npm packages
 apt remove -y libnode*
@@ -81,5 +78,4 @@ while IFS=, read -r project app pattern extract; do
 done < vendor/repos.gh
 
 # ansible deps
-source vendor/python/bin/activate
 ansible-galaxy collection install -r vendor/requirements.yml
